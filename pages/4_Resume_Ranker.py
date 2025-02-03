@@ -16,7 +16,7 @@ if not GOOGLE_API_KEY:
 genai.configure(api_key=GOOGLE_API_KEY)
 check_authentication()
 
-st.set_page_config(page_title="🚀JobFit.Ai Resume Ranking App", page_icon=":guardsman:")
+st.set_page_config(page_title="JobFit.Ai Resume Ranking App", page_icon=":guardsman:")
 
 def extract_text_from_pdf(pdf_file):
     """
@@ -69,7 +69,7 @@ def generate_job_match_score(job_description: str, resume_text: str) -> float:
         return 50  # Default score on error
 
 def main():
-    st.title("📄 Resume Ranking Application")
+    st.title("📄 JobFit.Ai Resume Ranking Application")
 
     # Job Description PDF Upload
     st.header("Upload Job Description PDF")
