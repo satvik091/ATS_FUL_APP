@@ -17,7 +17,7 @@ import plotly.graph_objects as go
 from auth import check_authentication
 
 # Set Streamlit page config at the top
-st.set_page_config(page_title="GLA ATS System", page_icon=":guardsman:")
+st.set_page_config(page_title="JobFit AI - Smart Career Matcher", page_icon="🔍")
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -57,9 +57,9 @@ def input_pdf_setup(pdf_file):
     return [extract_text_from_pdf(pdf_file)]
 
 # Streamlit UI
-st.title("**GLA University ATS System**")
+st.title("**JobFit.AI System**")
 st.subheader("About")
-st.write("This sophisticated ATS project, developed with Gemini Pro and Streamlit, seamlessly incorporates advanced features including resume match percentage, keyword analysis to identify missing criteria, and the generation of comprehensive profile summaries, enhancing the efficiency and precision of the candidate evaluation process for discerning talent acquisition professionals.")
+st.write("This sophisticated Applicant Tracking System, developed with Gemini Pro and Streamlit, seamlessly incorporates advanced features including resume match percentage, keyword analysis to identify missing criteria, and the generation of comprehensive profile summaries, enhancing the efficiency and precision of the candidate evaluation process for discerning talent acquisition professionals.")
 
 # Sidebar for input
 st.sidebar.header("Upload Your Job Description")
