@@ -3,7 +3,7 @@ from database import Database
 
 def main():
     # Set the page configuration
-    st.set_page_config(page_title="ATS Pro", page_icon="📊")
+    st.set_page_config(page_title="JobFit AI - Smart Career Matcher", page_icon="🔍")
     
     # Initialize session state variables
     if 'logged_in' not in st.session_state:
@@ -16,7 +16,8 @@ def main():
     
     # Display content based on login status
     if not st.session_state.logged_in:
-        st.title("Welcome to ATS Pro")
+        st.image("https://seeklogo.com/images/J/Jobfit-logo-B6E8FE9C02-seeklogo.com.gif", width=150)  
+        st.title("🚀 JobFit AI: Your Smart Career Matcher")
         
         # Tabs for Login and Sign Up
         tab1, tab2 = st.tabs(["Login", "Sign Up"])
@@ -52,7 +53,7 @@ def main():
     
     else:
         # Dashboard View
-        st.title("Welcome to ATS Pro Dashboard")
+        st.title("Welcome to JobFit Ai Dashboard")
         st.write("Please use the sidebar to navigate through different features.")
         
         # Sidebar Logout Button
