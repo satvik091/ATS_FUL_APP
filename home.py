@@ -52,8 +52,8 @@ def main():
                     st.error("Please fill all fields")
     
     else:
-        # Dashboard View
-        st.title("Welcome to JobFit Ai Dashboard")
+        st.image("https://seeklogo.com/images/J/Jobfit-logo-B6E8FE9C02-seeklogo.com.gif", width=150)  
+        st.title("🚀 JobFit AI: Your Smart Career Matcher")
         st.write("Please use the sidebar to navigate through different features.")
         
         # Sidebar Logout Button
