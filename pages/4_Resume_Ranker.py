@@ -8,7 +8,7 @@ import pandas as pd
 from auth import check_authentication
 
 # Configuration for Gemini API
-GOOGLE_API_KEY = ("AIzaSyBPDNB9oDlVpJlTdEkEnc7vWv_CsAZiVQ0")
+GOOGLE_API_KEY = ("AIzaSyDJNmx7PKmb92aHcrwBK7L5IKHipNzjVck")
 if not GOOGLE_API_KEY:
     st.error("Please set GOOGLE_API_KEY in Streamlit secrets")
     st.stop()
