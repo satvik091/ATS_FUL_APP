@@ -167,16 +167,9 @@ if job_desc_file is not None:
             st.write(response)
         
         elif opt == "Generate Cover Letter":
-            st.subheader("Personalized Cover Letter")
-            cover_letter_response = get_gemini_response(resume_text, job_desc_text, input_prompt10)
-            if cover_letter_response:
-                st.write(cover_letter_response)
-                
-                # TXT Download
-                st.download_button(
-                    label="Download Cover Letter as TXT",
-                    data=cover_letter_response,
-                    file_name="personalized_cover_letter.txt",
-                    mime="text/plain"
-                )
-                
+            cover_letter = get_gemini_response(resume_text, job_desc_text, cover_letter_prompt)
+            st.subheader("Generated Cover Letter")
+            st.write(cover_letter)
+            
+            pdf_data = download_text_as_pdf(cover_letter, "Cover_Letter.pdf")
+            st.download_button(label="Download Cover Letter", data=pdf_data, file_name="Cover_Letter.pdf", mime="application/pdf")
