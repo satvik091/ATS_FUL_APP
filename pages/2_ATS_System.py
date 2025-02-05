@@ -180,36 +180,3 @@ if job_desc_file is not None:
                     mime="text/plain"
                 )
                 
-                # DOCX Download
-                docx_buffer = BytesIO()
-                doc = Document()
-                doc.add_paragraph(cover_letter_response)
-                for paragraph in doc.paragraphs:
-                    paragraph.style = doc.styles.add_style('Custom', 1)
-                    for run in paragraph.runs:
-                        run.font.name = 'Calibri'
-                        run.font.size = Pt(11)
-                doc.save(docx_buffer)
-                docx_buffer.seek(0)
-                st.download_button(
-                    label="Download Cover Letter as DOCX",
-                    data=docx_buffer,
-                    file_name="personalized_cover_letter.docx",
-                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                )
-                
-                # PDF Download
-                pdf = FPDF()
-                pdf.add_page()
-                pdf.set_font("Arial", size=12)
-                for line in cover_letter_response.split('\n'):
-                    pdf.cell(200, 10, txt=line, ln=True)
-                pdf_buffer = BytesIO()
-                pdf.output(pdf_buffer)
-                pdf_buffer.seek(0)
-                st.download_button(
-                    label="Download Cover Letter as PDF",
-                    data=pdf_buffer,
-                    file_name="personalized_cover_letter.pdf",
-                    mime="application/pdf"
-                )
