@@ -5,7 +5,6 @@ from collections import Counter
 from docx import Document
 import difflib  # For calculating similarity in plagiarism check
 from dotenv import load_dotenv
-load_dotenv()
 import base64
 import os
 from PIL import Image
@@ -26,31 +25,26 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Configure Google Generative AI
-genai.configure(api_key=("AIzaSyDJNmx7PKmb92aHcrwBK7L5IKHipNzjVck"))
+load_dotenv()
+genai.configure(api_key=os.getenv("GENAI_API_KEY"))
 
 check_authentication()
-
 
 def get_gemini_response(resume_text, job_desc_text, prompt):
     """Fetches a response from Gemini API."""
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')
-        
-        # Combine inputs into a single text blob
         input_text = f"Resume:\n{resume_text}\n\nJob Description:\n{job_desc_text}\n\nPrompt:\n{prompt}"
-        
         response = model.generate_content(input_text)
         return response.text
     except Exception as e:
         st.error(f"Error in Gemini API: {e}")
         return None
 
-
 def extract_text_from_pdf(pdf_file):
     reader = PyPDF2.PdfReader(pdf_file)
     text = ''
-    for page_num in range(len(reader.pages)):
-        page = reader.pages[page_num]
+    for page in reader.pages:
         text += page.extract_text()
     return text
 
@@ -119,125 +113,103 @@ to craft a personalized, compelling cover letter that:
 
 # If a job description is uploaded
 if job_desc_file is not None:
-    # op = st.sidebar.selectbox("Resume:", ["Choose an option", "Yes, I have", "No, I have to create."])
     pdf_content = input_pdf_setup(job_desc_file)
     job_desc_text = pdf_content[0]
-
+    
     st.subheader("Your Resume")
     resume_file = st.file_uploader("Upload Your Resume (PDF)", type="pdf")
-
+    
     if resume_file is not None:
-        opt = st.sidebar.selectbox("Available Options", ["Choose an option","Percentage match" ,"Show Relevant Skills", "Non-relevant Skills", "Recommended Skills","Relevant Projects","Tell Me About the Resume","Grammatical Evaluation","Generate Cover Letter"])
+        opt = st.sidebar.selectbox("Available Options", [
+            "Choose an option", "Percentage match", "Show Relevant Skills", 
+            "Non-relevant Skills", "Recommended Skills", "Relevant Projects", 
+            "Tell Me About the Resume", "Grammatical Evaluation", "Generate Cover Letter"
+        ])
+        
         resume_pdf_content = input_pdf_setup(resume_file)
         resume_text = resume_pdf_content[0]
-
-            # Get match percentage
+        
         if opt == "Percentage match":
-          response = get_gemini_response(input_prompt3, resume_pdf_content, job_desc_text[0])
-              # Display the percentage as a progress bar
-          st.subheader("Percentage Match")
-          st.progress(int(response))
-          st.write(f"Match: {response}%")
-
-            # Get relevant skills
-        if opt == "Show Relevant Skills":
-              relevant_skills = get_gemini_response(resume_text, pdf_content, input_prompt4)
-              st.write("Relevant Skills:")
-              st.write(relevant_skills)
-
-            # Get non-relevant skills
-        if opt == "Non-relevant Skills":
-              non_relevant_skills = get_gemini_response(resume_text, pdf_content, input_prompt5)
-              st.write("Non-Relevant Skills:")
-              st.write(non_relevant_skills)
-
-            # Get relevant projects
-        if opt == "Relevant Projects":
-              relevant_projects = get_gemini_response(resume_text, pdf_content, input_prompt7)
-              st.write("Relevant Projects:")
-              st.write(relevant_projects)
-
-            # Get recommended skills
-        if opt == "Recommended Skills":
-              recommended_skills = get_gemini_response(resume_text, pdf_content, input_prompt8)
-              st.write("Recommended Skills:")
-              st.write(recommended_skills)
-
-        if opt == "Tell Me About the Resume":
-              st.subheader("Detailed Evaluation of Resume")
-              evaluation_response = get_gemini_response(resume_pdf_content, pdf_content, input_prompt1)
-              if evaluation_response:
-                  st.write(evaluation_response)
-	
-        if opt == "Grammatical Evaluation":
+            response = get_gemini_response(resume_text, job_desc_text, input_prompt3)
+            st.subheader("Percentage Match")
+            st.progress(int(response))
+            st.write(f"Match: {response}%")
+        
+        elif opt == "Show Relevant Skills":
+            relevant_skills = get_gemini_response(resume_text, job_desc_text, input_prompt4)
+            st.write("Relevant Skills:")
+            st.write(relevant_skills)
+        
+        elif opt == "Non-relevant Skills":
+            non_relevant_skills = get_gemini_response(resume_text, job_desc_text, input_prompt5)
+            st.write("Non-Relevant Skills:")
+            st.write(non_relevant_skills)
+        
+        elif opt == "Relevant Projects":
+            relevant_projects = get_gemini_response(resume_text, job_desc_text, input_prompt7)
+            st.write("Relevant Projects:")
+            st.write(relevant_projects)
+        
+        elif opt == "Recommended Skills":
+            recommended_skills = get_gemini_response(resume_text, job_desc_text, input_prompt8)
+            st.write("Recommended Skills:")
+            st.write(recommended_skills)
+        
+        elif opt == "Tell Me About the Resume":
+            evaluation_response = get_gemini_response(resume_text, job_desc_text, input_prompt1)
+            if evaluation_response:
+                st.subheader("Detailed Evaluation of Resume")
+                st.write(evaluation_response)
+        
+        elif opt == "Grammatical Evaluation":
             response = get_gemini_response(resume_text, job_desc_text, input_prompt9)
             st.subheader("Grammatical Evaluation")
             st.write(response)
-
-
-	if opt == "Generate Cover Letter":
-	        st.subheader("Personalized Cover Letter")
-	        
-	        # Generate cover letter using Gemini
-	        cover_letter_response = get_gemini_response(
-	            resume_text, 
-	            job_desc_text, 
-	            input_prompt10
-	        )
-	        
-	        if cover_letter_response:
-	            # Display the generated cover letter
-	            st.write(cover_letter_response)
-	            
-	            # TXT Download
-	            st.download_button(
-	                label="Download Cover Letter as TXT",
-	                data=cover_letter_response,
-	                file_name="personalized_cover_letter.txt",
-	                mime="text/plain"
-	            )
-	            
-	            # DOCX Download
-	            docx_buffer = BytesIO()
-	            doc = Document()
-	            doc.add_paragraph(cover_letter_response)
-	            
-	            # Style the document
-	            for paragraph in doc.paragraphs:
-	                paragraph.style = doc.styles.add_style('Custom', 1)
-	                for run in paragraph.runs:
-	                    run.font.name = 'Calibri'
-	                    run.font.size = Pt(11)
-	            
-	            doc.save(docx_buffer)
-	            docx_buffer.seek(0)
-	            
-	            st.download_button(
-	                label="Download Cover Letter as DOCX",
-	                data=docx_buffer,
-	                file_name="personalized_cover_letter.docx",
-	                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	            )
-	            
-	            # PDF Download
-	            pdf = FPDF()
-	            pdf.add_page()
-	            pdf.set_font("Arial", size=12)
-	            
-	            # Write multiline text
-	            for line in cover_letter_response.split('\n'):
-	                pdf.cell(200, 10, txt=line, ln=True)
-	            
-	            # Save PDF to a bytes buffer
-	            pdf_buffer = BytesIO()
-	            pdf.output(pdf_buffer)
-	            pdf_buffer.seek(0)
-	            
-	            st.download_button(
-	                label="Download Cover Letter as PDF",
-	                data=pdf_buffer,
-	                file_name="personalized_cover_letter.pdf",
-	                mime="application/pdf"
-	            )
-	
-	
+        
+        elif opt == "Generate Cover Letter":
+            st.subheader("Personalized Cover Letter")
+            cover_letter_response = get_gemini_response(resume_text, job_desc_text, input_prompt10)
+            if cover_letter_response:
+                st.write(cover_letter_response)
+                
+                # TXT Download
+                st.download_button(
+                    label="Download Cover Letter as TXT",
+                    data=cover_letter_response,
+                    file_name="personalized_cover_letter.txt",
+                    mime="text/plain"
+                )
+                
+                # DOCX Download
+                docx_buffer = BytesIO()
+                doc = Document()
+                doc.add_paragraph(cover_letter_response)
+                for paragraph in doc.paragraphs:
+                    paragraph.style = doc.styles.add_style('Custom', 1)
+                    for run in paragraph.runs:
+                        run.font.name = 'Calibri'
+                        run.font.size = Pt(11)
+                doc.save(docx_buffer)
+                docx_buffer.seek(0)
+                st.download_button(
+                    label="Download Cover Letter as DOCX",
+                    data=docx_buffer,
+                    file_name="personalized_cover_letter.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
+                
+                # PDF Download
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Arial", size=12)
+                for line in cover_letter_response.split('\n'):
+                    pdf.cell(200, 10, txt=line, ln=True)
+                pdf_buffer = BytesIO()
+                pdf.output(pdf_buffer)
+                pdf_buffer.seek(0)
+                st.download_button(
+                    label="Download Cover Letter as PDF",
+                    data=pdf_buffer,
+                    file_name="personalized_cover_letter.pdf",
+                    mime="application/pdf"
+                )
