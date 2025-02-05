@@ -182,7 +182,7 @@ if job_desc_file is not None:
             st.write(response)
 
         if opt == "Generate Cover Letter":
-            cover_letter = get_gemini_response(resume_text, job_desc_text, cover_letter_prompt)
+            cover_letter = get_gemini_response(resume_text, job_desc_text, input_prompt10)
             st.subheader("Generated Cover Letter")
             st.write(cover_letter)
             
