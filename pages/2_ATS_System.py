@@ -15,6 +15,7 @@ from io import BytesIO
 from fpdf import FPDF
 import plotly.graph_objects as go
 from auth import check_authentication
+from docx.shared import Pt
 
 # Set Streamlit page config at the top
 st.set_page_config(page_title="JobFit AI - Smart Career Matcher", page_icon="🔍")
@@ -106,6 +107,16 @@ The output should come as text containing all recommended skills required for gi
 
 input_prompt9 = "Analyze the resume for grammatical errors, awkward phrasing, and clarity. Underline corrections and give suggestions for making it more ats friendly."
 
+input_prompt10 = """
+You are a professional career counselor and expert cover letter writer. Analyze the resume and job description 
+to craft a personalized, compelling cover letter that:
+1. Highlights the most relevant skills and experiences
+2. Directly addresses key requirements in the job description
+3. Demonstrates enthusiasm for the specific role
+4. Uses a professional and engaging tone
+5. Follows standard cover letter formatting and best practices
+"""
+
 # If a job description is uploaded
 if job_desc_file is not None:
     # op = st.sidebar.selectbox("Resume:", ["Choose an option", "Yes, I have", "No, I have to create."])
@@ -116,7 +127,7 @@ if job_desc_file is not None:
     resume_file = st.file_uploader("Upload Your Resume (PDF)", type="pdf")
 
     if resume_file is not None:
-        opt = st.sidebar.selectbox("Available Options", ["Choose an option","Percentage match" ,"Show Relevant Skills", "Non-relevant Skills", "Recommended Skills","Relevant Projects","Tell Me About the Resume","Grammatical Evaluation"])
+        opt = st.sidebar.selectbox("Available Options", ["Choose an option","Percentage match" ,"Show Relevant Skills", "Non-relevant Skills", "Recommended Skills","Relevant Projects","Tell Me About the Resume","Grammatical Evaluation","Generate Cover Letter"])
         resume_pdf_content = input_pdf_setup(resume_file)
         resume_text = resume_pdf_content[0]
 
@@ -164,3 +175,69 @@ if job_desc_file is not None:
             st.write(response)
 
 
+	if opt == "Generate Cover Letter":
+	        st.subheader("Personalized Cover Letter")
+	        
+	        # Generate cover letter using Gemini
+	        cover_letter_response = get_gemini_response(
+	            resume_text, 
+	            job_desc_text, 
+	            input_prompt10
+	        )
+	        
+	        if cover_letter_response:
+	            # Display the generated cover letter
+	            st.write(cover_letter_response)
+	            
+	            # TXT Download
+	            st.download_button(
+	                label="Download Cover Letter as TXT",
+	                data=cover_letter_response,
+	                file_name="personalized_cover_letter.txt",
+	                mime="text/plain"
+	            )
+	            
+	            # DOCX Download
+	            docx_buffer = BytesIO()
+	            doc = Document()
+	            doc.add_paragraph(cover_letter_response)
+	            
+	            # Style the document
+	            for paragraph in doc.paragraphs:
+	                paragraph.style = doc.styles.add_style('Custom', 1)
+	                for run in paragraph.runs:
+	                    run.font.name = 'Calibri'
+	                    run.font.size = Pt(11)
+	            
+	            doc.save(docx_buffer)
+	            docx_buffer.seek(0)
+	            
+	            st.download_button(
+	                label="Download Cover Letter as DOCX",
+	                data=docx_buffer,
+	                file_name="personalized_cover_letter.docx",
+	                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+	            )
+	            
+	            # PDF Download
+	            pdf = FPDF()
+	            pdf.add_page()
+	            pdf.set_font("Arial", size=12)
+	            
+	            # Write multiline text
+	            for line in cover_letter_response.split('\n'):
+	                pdf.cell(200, 10, txt=line, ln=True)
+	            
+	            # Save PDF to a bytes buffer
+	            pdf_buffer = BytesIO()
+	            pdf.output(pdf_buffer)
+	            pdf_buffer.seek(0)
+	            
+	            st.download_button(
+	                label="Download Cover Letter as PDF",
+	                data=pdf_buffer,
+	                file_name="personalized_cover_letter.pdf",
+	                mime="application/pdf"
+	            )
+	
+	
