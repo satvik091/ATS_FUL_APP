@@ -25,7 +25,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Configure Google Generative AI
-genai.configure(api_key=("AIzaSyAHjG8peOSLUxqLGuhyiRkuDhFfKZgZL1w"))
+genai.configure(api_key=("AIzaSyBq34BDTc6k-LjSAyiB86z-HXNOnWYWtWc"))
 
 check_authentication()
 
@@ -114,13 +114,20 @@ The output should come as text containing all recommended skills required for gi
 input_prompt9 = "Analyze the resume for grammatical errors, awkward phrasing, and clarity. Underline corrections and give suggestions for making it more ats friendly."
 
 input_prompt10 = """
-You are a professional career counselor and expert cover letter writer. Analyze the resume and job description 
-to craft a personalized, compelling cover letter that:
-1. Highlights the most relevant skills and experiences
-2. Directly addresses key requirements in the job description
-3. Demonstrates enthusiasm for the specific role
-4. Uses a professional and engaging tone
-5. Follows standard cover letter formatting and best practices
+You are a professional career counselor and expert cover letter writer. 
+
+Using the provided resume and one or more job descriptions, craft personalized, compelling 3-paragraph cover letters that:  
+
+1. Highlight the most relevant skills, achievements, and problem-solving experiences from my resume.  
+2. Directly address and align with the key requirements in each job description.  
+3. Demonstrate genuine enthusiasm for the specific role and organization.  
+4. Clearly explain why I am the best fit for the position through a strong, tailored narrative.  
+5. Maintain a professional, engaging tone while following standard cover letter formatting and best practices.  
+
+If multiple job descriptions are provided, generate **separate, tailored cover letters for each role**, ensuring each feels unique, authentic, and impactful.  
+
+The final output should be concise, polished, and ready to use.
+
 """
 
 
