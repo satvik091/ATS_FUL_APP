@@ -25,7 +25,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Configure Google Generative AI
-genai.configure(api_key=("AIzaSyBq34BDTc6k-LjSAyiB86z-HXNOnWYWtWc"))
+genai.configure(api_key=("AIzaSyC8bVdgvOD9r5kBDchtrX9sUJbQqgPBebc"))
 
 check_authentication()
 
