@@ -33,7 +33,7 @@ check_authentication()
 def get_gemini_response(resume_text, job_desc_text, prompt):
     """Fetches a response from Gemini API."""
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         # Combine inputs into a single text blob
         input_text = f"Resume:\n{resume_text}\n\nJob Description:\n{job_desc_text}\n\nPrompt:\n{prompt}"
