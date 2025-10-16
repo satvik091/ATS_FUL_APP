@@ -35,7 +35,7 @@ def generate_job_match_score(job_description: str, resume_text: str) -> float:
     Use Gemini model to generate a job match score
     """
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-pro')
 
         prompt = f"""Analyze the following job description and resume,
         and provide a numerical score (0-100) representing how well
